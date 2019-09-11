@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Rule;
 use Illuminate\Http\Request;
 
-class RuleController extends Controller
+class UserCRMController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,8 +13,7 @@ class RuleController extends Controller
      */
     public function index()
     {
-        $rule = Rule::all();
-        return response()->json($rule,200);
+        //
     }
 
     /**
@@ -47,14 +45,7 @@ class RuleController extends Controller
      */
     public function show($id)
     {
-        $rule = Rule::where('UUID_RULE',$id)->first();
-        if ($rule) {
-            # code...
-            return response()->json($rule,200);
-        }else{
-            $error = 'Không tìm thấy!';
-            return response()->json($error);
-        }
+        //
     }
 
     /**
@@ -77,11 +68,7 @@ class RuleController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $rule = Rule::where('UUID_RULE',$id)->update([
-            "NAME_RULE" => $request->NAME_RULE,
-            "NOTE_RULE" => $request->NOTE_RULE
-        ]);
-        return response()->json($rule,200);
+        //
     }
 
     /**
@@ -92,10 +79,6 @@ class RuleController extends Controller
      */
     public function destroy($id)
     {
-        $rule = DB::table('crm_rule')->where('UUID_RULE',$id)->first();
-        return response([
-            'error' => false,
-            'msg' => 'Da xoa!'
-        ]);
+        //
     }
 }

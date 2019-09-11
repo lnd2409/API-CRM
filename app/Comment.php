@@ -9,9 +9,9 @@ class Comment extends Model
     public $timestamps = false;
     
     protected $table        = 'crm_comment_file_management';
-    protected $fillable     = ['UUID_FILE_MANAGEMENT','UUID_FOLDER_MANAGEMENT','PATH_FILE','TYPE_FILE','FOLDER_FILE','MONTH_FOLDER'];
-    protected $guarded      = ['UUID_FILE_MANAGEMENT'];
+    protected $fillable     = ['UUID_COMMENT','UUID_FILE_MANAGEMENT','CONTENT_COMMENT','NAME_USER'];
+    protected $guarded      = ['UUID_COMMENT'];
 
-    protected $primaryKey   = ['UUID_FILE_MANAGEMENT'];
+    protected $primaryKey   = ['UUID_COMMENT'];
     public    $incrementing = false;
 }

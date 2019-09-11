@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Comment;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
@@ -13,7 +14,8 @@ class CommentController extends Controller
      */
     public function index()
     {
-        //
+        $cmt = Comment::all();
+        return response()->json($cmt,200);
     }
 
     /**
@@ -34,7 +36,8 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $cmt = Comment::create($request->all());
+        return response()->json($cmt,200);
     }
 
     /**
@@ -45,7 +48,8 @@ class CommentController extends Controller
      */
     public function show($id)
     {
-        //
+        $cmt = Comment::where('UUID_COMMENT',$id)->first();
+        return response()->json($cmt,200);
     }
 
     /**
@@ -68,7 +72,10 @@ class CommentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $cmt = Comment::where('UUID_COMMENT',$id)->update([
+            'CONTENT_COMMENT' => $request->CONTENT_COMMENT
+        ]);
+        return response()->json($cmt,200);
     }
 
     /**
@@ -79,6 +86,9 @@ class CommentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $cmt = Comment::where('UUID_COMMENT',$id)->delete();
+        return response([
+            'msg' => 'Xoa thanh cong'
+        ],200);
     }
 }

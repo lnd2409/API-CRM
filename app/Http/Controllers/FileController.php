@@ -42,75 +42,27 @@ class FileController extends Controller
      */
     public function store(Request $request)
     {
-
-        //Chuyển về không dấu
-        function vn_to_str ($str){
- 
-            $unicode = array(
-             
-            'a'=>'á|à|ả|ã|ạ|ă|ắ|ặ|ằ|ẳ|ẵ|â|ấ|ầ|ẩ|ẫ|ậ',
-             
-            'd'=>'đ',
-             
-            'e'=>'é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ',
-             
-            'i'=>'í|ì|ỉ|ĩ|ị',
-             
-            'o'=>'ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ',
-             
-            'u'=>'ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự',
-             
-            'y'=>'ý|ỳ|ỷ|ỹ|ỵ',
-             
-            'A'=>'Á|À|Ả|Ã|Ạ|Ă|Ắ|Ặ|Ằ|Ẳ|Ẵ|Â|Ấ|Ầ|Ẩ|Ẫ|Ậ',
-             
-            'D'=>'Đ',
-             
-            'E'=>'É|È|Ẻ|Ẽ|Ẹ|Ê|Ế|Ề|Ể|Ễ|Ệ',
-             
-            'I'=>'Í|Ì|Ỉ|Ĩ|Ị',
-             
-            'O'=>'Ó|Ò|Ỏ|Õ|Ọ|Ô|Ố|Ồ|Ổ|Ỗ|Ộ|Ơ|Ớ|Ờ|Ở|Ỡ|Ợ',
-             
-            'U'=>'Ú|Ù|Ủ|Ũ|Ụ|Ư|Ứ|Ừ|Ử|Ữ|Ự',
-             
-            'Y'=>'Ý|Ỳ|Ỷ|Ỹ|Ỵ',
-             
-            );
-             
-            foreach($unicode as $nonUnicode=>$uni){
-             
-            $str = preg_replace("/($uni)/i", $nonUnicode, $str);
-             
-            }
-            $str = str_replace(' ','',$str);
-             
-            return $str;
-             
-            }
-
+        
         //Xử lý
         $thisYear = Carbon::now()->year;
         $thisMonth = Carbon::now()->month;
         $idFolder = $request->get('idFolder');
         $nameFolder = Folder::where('UUID_FOLDER_MANAGEMENT',$idFolder)->first('NAME_FOLDER');
         $nameFolder2 = collect($nameFolder)->first();
-        $nameFolderFormat = vn_to_str($nameFolder2);
         $file = $request->file('nameFile');
         $nameFile = $file->getClientOriginalName();
         $cutNameFile = explode('.',$nameFile);
         $typeFile = end($cutNameFile);
-
+        $uuidFile = $request->get('idFile');
         $getFile = File::all();
         foreach ($getFile as $item) {
             # code...
-            $checkFile = $item->PATH_FILE;
-            $pathFile = $thisYear.'/'.$nameFolderFormat.'/'.$typeFile.'/'.$thisMonth.'/'.$nameFile;
-            if ($checkFile != $pathFile) {
-                # code...
+            $checkFile = $item->UUID_FILE_MANAGEMENT;
+            if ($checkFile != $uuidFile) {
+            //     # code...
                 $file->move($thisYear.'/'.$nameFolder2.'/'.$typeFile.'/'.$thisMonth.'/',$nameFile);
+                $pathFile = $typeFile.'/'.$thisMonth.'/'.$nameFile;
                 $saveFile = new File();
-                $uuidFile = Str::uuid()->toString();
                 $saveFile->UUID_FILE_MANAGEMENT = $uuidFile;
                 $saveFile->UUID_FOLDER_MANAGEMENT = $idFolder;
                 $saveFile->PATH_FILE = $pathFile;
@@ -120,7 +72,7 @@ class FileController extends Controller
                 $saveFile->save();
                 return response()->json($saveFile,200);
             }else{
-                return response(['msg' => 'File đã tồn tại'],200);
+                return response(['msg' => 'File đã tồn tại'],201);
             }
         }
     }
@@ -133,7 +85,16 @@ class FileController extends Controller
      */
     public function show($id)
     {
-        //
+        $file = File::where('UUID_FILE_MANAGEMENT',$id)->first();
+        if ($file) {
+            # code...
+            return response()->json($file,200);
+        }else{
+            return response([
+                'error' => true,
+                'msg' => 'Không tìm thấy file'
+            ],404);
+        }
     }
 
     /**
@@ -156,7 +117,30 @@ class FileController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $file = File::where('UUID_FILE_MANAGEMENT',$id)->first();
+        $thisMonth = Carbon::now()->month;
+        $getFile = File::where('UUID_FILE_MANAGEMENT',$id)->first();
+        $pathFile = $getFile->PATH_FILE;
+
+
+        $cutPathFile = explode('/',$pathFile);
+        $nameFile = end($cutPathFile);
+
+        //Lấy phần mở rộng
+        $cutNameFile = explode('.',$nameFile);
+        // $fileDetail = $cutNameFile[1];
+        return [$cutNameFile,$nameFile];
+        // return [$fileDetail, $nameFile, $pathFile];
+        // $file = File::where('UUID_FILE_MANAGEMENT',$id)->update([
+        //     "PATH_FILE" => $fileDetail.'/'.$thisMonth.'/'.$request->get('nameFile').'/'.$fileDetail
+        // ]);
+        // // $file->PATH_NAME = $request->get();
+        // // $file->save();
+        // return response()->json($file,200);
+
+
+        //Thay đổi tên file
+        // $file->PATH_FILE = $request->get('nameFile');
+
         
     }
 

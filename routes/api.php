@@ -21,19 +21,31 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 /* Folder */
 //e đặt theo kiểu này nè
 Route::get('folder','FolderController@index');
-//Route::get('folder/{id}','FolderController@show); // sửa lại thnafh thến ày nhá
-Route::get('folder/edit/{id}','FolderController@edit'); //get nhưng sao lại edit thế: em lấy cái file đó ra để edit còn update để sửa
-// này nữa
-// => Route::póst('folder','FolderController@store');
-Route::post('folder', 'FolderController@store');
-// Route::post('folder/{id}/update','FolderController@update')
-Route::put('update-folder/{id}', 'FolderController@update');
-// Route::delete('folder/{id}','FolderController@destroy')
-Route::delete('delete-folder/{id}', 'FolderController@destroy');
+Route::get('folder/{id}','FolderController@show'); // sửa lại thnafh thến ày nhá
+Route::post('folder/create', 'FolderController@store');
+Route::post('folder/{id}/update','FolderController@update');
+Route::delete('folder/{id}/delete', 'FolderController@destroy');
 // => thống nhất là 1 kiểu như thế nha 
+
+//em đừng lo cái vụ uuid đầu vào, khi a call sẽ truyền nó vô à  năm vẫn thế 
+// nhưng đối ới phần file thì phải dùm formData() tại file thì không dùn json được 
 /* File */
 Route::get('file','FileController@index');
-Route::get('file/edit/{id}','FileController@edit');
-Route::post('create-file', 'FileController@store');
-Route::put('update-file/{id}', 'FileController@update');
-Route::delete('delete-file/{id}', 'FileController@destroy');
+Route::get('file/{id}','FileController@shows');
+Route::post('file/create', 'FileController@store');
+Route::post('file/{id}/update', 'FileController@update');
+Route::delete('file/{id}/delete', 'FileController@destroy');
+
+/* Rule */
+Route::get('rule','RuleController@index');
+Route::get('rule/{id}','RuleController@shows');
+Route::post('rule/create', 'RuleController@store');
+Route::post('rule/{id}/update', 'RuleController@update');
+Route::delete('rule/{id}/delete', 'RuleController@destroy');
+
+/* Comment */
+Route::get('comment','CommentController@index');
+Route::get('comment/{id}','CommentController@shows');
+Route::post('comment/create', 'CommentController@store');
+Route::post('comment/{id}/update', 'CommentController@update');
+Route::delete('comment/{id}/delete', 'CommentController@destroy');
