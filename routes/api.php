@@ -49,3 +49,10 @@ Route::get('comment/{id}','CommentController@shows');
 Route::post('comment/create', 'CommentController@store');
 Route::post('comment/{id}/update', 'CommentController@update');
 Route::delete('comment/{id}/delete', 'CommentController@destroy');
+
+/* User */
+Route::get('user','UserCRMController@index');
+Route::get('user/{id}','UserCRMController@shows');
+Route::post('user/create', 'UserCRMController@store');
+Route::post('user/{id}/update', 'UserCRMController@update');
+Route::delete('user/{id}/delete', 'UserCRMController@destroy');

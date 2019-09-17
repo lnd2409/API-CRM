@@ -1,5 +1,5 @@
 mỗi lần viết xong e thao tác như sau:
 - git add -A  // add source vào head
 - git commit -m '....' //comment
-- git push origin master // push lên server nhưng khi làm team thì master có thể tạo branh khác nên giờ e cứ branh master đi 
-ok a
+- git push origin master // push lên server nhưng khi làm team thì master có thể tạo branh khác nên giờ e cứ branh master đi
+

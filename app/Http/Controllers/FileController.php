@@ -152,7 +152,8 @@ class FileController extends Controller
      */
     public function destroy($id)
     {
-        $folder = DB::table('crm_file_management')->where('UUID_FILE_MANAGEMENT','=',$id)->delete();
+        $folder = DB::table('crm_file_management')
+        ->where('UUID_FILE_MANAGEMENT','=',$id)->delete();
         return response([
             'error' => false,
             'msg' => 'Xóa thành công'

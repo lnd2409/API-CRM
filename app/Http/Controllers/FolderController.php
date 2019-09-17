@@ -96,10 +96,27 @@ class FolderController extends Controller
     public function destroy($id)
     {
         //Còn di chuyển những file trong thư mục qua thư mục trống
-        $folder = DB::table('crm_folder_management')->where('UUID_FOLDER_MANAGEMENT','=',$id)->delete();
-        return response([
-            'error' => false,
-            'msg' => 'Xóa thành công'
-        ],200);
+        // $folder = DB::table('crm_folder_management')->where('UUID_FOLDER_MANAGEMENT','=',$id)->delete();
+        // return response([
+        //     'error' => false,
+        //     'msg' => 'Xóa thành công'
+        // ],200);
+
+        // $folder = DB::table('crm_folder_management')
+        // ->join('crm_file_management', 'crm_folder_management.UUID_FOLDER_MANAGEMENT', '=', 'crm_file_management.UUID_FOLDER_MANAGEMENT')
+        // ->where('crm_folder_management.UUID_FOLDER_MANAGEMENT','=',$id)
+        // ->first();
+        $folder = Folder::join('crm_file_management',
+                                'crm_file_management.UUID_FOLDER_MANAGEMENT',
+                                '=', 'crm_file_management.UUID_FOLDER_MANAGEMENT')
+                            ->where('crm_file_management.UUID_FOLDER_MANAGEMENT','=',$id)
+                            ->first();
+        $file = $folder->UUID_FILE_MANAGEMENT;
+        if ($file) {
+            # code...
+            // di chuyển $file qua thư mục <empty>
+        }else{
+            // xóa bình thường
+        }
     }
 }
