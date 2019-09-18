@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\File;
 use App\Folder;
+use App\History;
+use App\UserCRM;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -44,22 +46,22 @@ class FileController extends Controller
     {
         
         //Xử lý
-        $thisYear = Carbon::now()->year;
-        $thisMonth = Carbon::now()->month;
-        $idFolder = $request->get('idFolder');
-        $nameFolder = Folder::where('UUID_FOLDER_MANAGEMENT',$idFolder)->first('NAME_FOLDER');
-        $nameFolder2 = collect($nameFolder)->first();
-        $file = $request->file('nameFile');
-        $nameFile = $file->getClientOriginalName();
-        $cutNameFile = explode('.',$nameFile);
-        $typeFile = end($cutNameFile);
-        $uuidFile = $request->get('idFile');
-        $getFile = File::all();
-        foreach ($getFile as $item) {
-            # code...
-            $checkFile = $item->UUID_FILE_MANAGEMENT;
-            if ($checkFile != $uuidFile) {
-            //     # code...
+        if($request->get('api_token'))
+        {
+            $user = UserCRM::where('USER_TOKEN',$request->get('api_token'))->first();
+            if($user)
+            {
+                $thisYear = Carbon::now()->year;
+                $thisMonth = Carbon::now()->month;
+                $thisDay = Carbon::now()->day;
+                $idFolder = $request->get('idFolder');
+                $uuidFile = $request->get('idFile');
+                $nameFolder = Folder::where('UUID_FOLDER_MANAGEMENT',$idFolder)->first('NAME_FOLDER');
+                $nameFolder2 = collect($nameFolder)->first();
+                $file = $request->file('nameFile');
+                $nameFile = $file->getClientOriginalName();
+                $cutNameFile = explode('.',$nameFile);
+                $typeFile = end($cutNameFile);
                 $file->move($thisYear.'/'.$nameFolder2.'/'.$typeFile.'/'.$thisMonth.'/',$nameFile);
                 $pathFile = $typeFile.'/'.$thisMonth.'/'.$nameFile;
                 $saveFile = new File();
@@ -69,12 +71,18 @@ class FileController extends Controller
                 $saveFile->TYPE_FILE = $typeFile;
                 $saveFile->FOLDER_FILE = $nameFolder2;
                 $saveFile->MONTH_FOLDER = $thisMonth;
+                $saveFile->NAME_FILE = $nameFile;
                 $saveFile->save();
+                History::create([
+                    "UUID_USER" => $user->UUID_USER,
+                    "UUID_HISTORY" => Str::uuid(),
+                    "NAME_HISTORY" => "user",
+                    "NOTE_HISTORY" => $user->USERNAME.' vừa tạo file '.$saveFile->NAME_FILE
+                ]);
                 return response()->json($saveFile,200);
-            }else{
-                return response(['msg' => 'File đã tồn tại'],201);
             }
         }
+        
     }
     
     /**
@@ -150,14 +158,29 @@ class FileController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
-        $folder = DB::table('crm_file_management')
-        ->where('UUID_FILE_MANAGEMENT','=',$id)->delete();
-        return response([
-            'error' => false,
-            'msg' => 'Xóa thành công'
-        ],200);
+        if ($request->get('api_token')) {
+            # code...
+            $user = UserCRM::where('USER_TOKEN',$request->get('api_token'))->first(); 
+            if ($user) {
+                # code...
+                $file = File::where('UUID_FILE',$id)->first();
+            
+                $file_delete = File::where('UUID_FILE',$id)->delete();
+                History::create([
+                    "UUID_USER" => $user->UUID_USER,
+                    "UUID_HISTORY" => Str::uuid(),
+                    "NAME_HISTORY" => "user",
+                    "NOTE_HISTORY" => $user->USERNAME.' vừa xóa file '.$file_delete->NAME_FILE
+                ]);
+                $path = $file->NAME_FILE;
+
+                return response()->json($file, 200);
+            }           
+        }else{
+            return response()->json('error', 401);
+        }
     }
     
 }

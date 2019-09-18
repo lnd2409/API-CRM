@@ -4,9 +4,15 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class UserCRM extends Model
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+
+class UserCRM extends Authenticatable implements JWTSubject
+// class UserCRM extends Model
 {
-    												
+                        
+    
     public    $timestamps   = false;
 
     protected $table        = 'crm_user';
@@ -15,6 +21,14 @@ class UserCRM extends Model
                                 'BIRTH_DAY','AVATAR', 'ADDRESS','USER_TOKEN','NOTIFY_TOKEN'];
     protected $guarded      = ['UUID_USER'];
 
-    protected $primaryKey   = ['UUID_USER'];
+    // protected $primaryKey   = ['UUID_USER'];
     public    $incrementing = false;
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
 }

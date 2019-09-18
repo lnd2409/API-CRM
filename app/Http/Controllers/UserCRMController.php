@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\UserCRM;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Facades\Auth;
 
 class UserCRMController extends Controller
 {
@@ -36,32 +38,25 @@ class UserCRMController extends Controller
      */
     public function store(Request $request)
     {
-        $user = new UserCRM();
-        $user->UUID_USER = $request->get('idUser');
-        $user->UUID_RULE = $request->get('idRule');
-        $user->USERNAME = $request->get('username');
-        $user->PASSWORD = md5($request->get('password'));
-        $user->NAME = $request->get('name');
-        $user->PHONE = $request->get('phone');
-        $user->GENDER = $request->get('gender');
-        $user->BIRTH_DAY = $request->get('birthday');
-        $user->ADDRESS = $request->get('address');
-        $user->USER_TOKEN = $request->get('userToken');
-        $user->NOTIFY_TOKEN = $request->get('notiftToken');
-        $getAvata = $request->file('avata');
-        if ($getAvata) {
+        // if ($request->has('api_token')) {
             # code...
-            $getNameAvata = $getAvata->getClientOriginalName();
-            $getAvata->move('upload/avata',$getNameAvata);
-            $user->AVATAR = $getNameAvata;
-            $user->save();
-            return response()->json($user, 200);
-        }
-        else
-        {
-            $user->save();
-            return response()->json($user, 200);
-        }
+            // $user = UserModel::where('USER_TOKEN', $request->get('api_token'))->first();
+            // if ($user) {
+                # code...
+                $data = $request->all();
+                if ($request->has('AVATA')) {
+                    # code...
+                    $file = $request->file('AVATA');
+                    $fileName = $file->getClientOriginalName();
+                    $file->move('upload/avata',$fileName);
+                    $path = 'upload/avata/'.$fileName;
+                    $data['AVATA'] = $path;
+                }
+                $data['PASSWORD'] = md5($request->get('PASSWORD'));
+                $user_new = UserCRM::create($data);
+            // }
+        // }
+        // return response()->json('error');
     }
 
     /**
@@ -116,6 +111,38 @@ class UserCRMController extends Controller
     public function destroy($id)
     {
         $user = DB::table('crm_user')->where('UUID_USER','=',$id)->delete();
+        return response()->json($user, 200);
+    }
+
+    public function loginUser(Request $request)
+    {
+        $user = UserCRM::where('USERNAME',$request->get('USERNAME'))->first();
+        if($user)
+        {
+            if(md5(($request->get("PASSWORD")), $user['PASSWORD']))
+            {
+                $token = JWTAuth::fromUser($user);
+                $user = UserCRM::where('USERNAME',$request->get("USERNAME"))->update([
+                    "USER_TOKEN" => $token
+                ]);
+                return response()->json($token, 200);
+            }
+            else {
+                return response()->json(false, 404);
+            }
+        }
+        else {
+            return response()->json('error', 404);
+        }
+    }
+
+    public function logoutUser(Request $request)
+    {
+        $token = $request->get('api_token');
+        
+        $user= UserCRM::where('USER_TOKEN',$token)->update([
+            'USER_TOKEN' => null
+        ]);
         return response()->json($user, 200);
     }
 }
