@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use DB;
+// use File;
 
 class FileController extends Controller
 {
@@ -18,10 +19,24 @@ class FileController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $file = File::all();
-        return response()->json($file,200);
+        if($request->has('month'))
+        { 
+            $fileMonth = File::where('MONTH_FOLDER',$request->get('month'))->get();
+            return response()->json($fileMonth,200);
+        }
+        elseif ($request->has('folder'))
+        {
+            # code...
+            $folderID = File::where('UUID_FOLDER_MANAGEMENT',$request->get('folder'))->get();
+            return response()->json($folderID, 200);
+        }
+        else
+        {
+            $file = File::all();
+            return response()->json($file,200);
+        }
     }
 
     /**
@@ -71,6 +86,7 @@ class FileController extends Controller
                 $saveFile->TYPE_FILE = $typeFile;
                 $saveFile->FOLDER_FILE = $nameFolder2;
                 $saveFile->MONTH_FOLDER = $thisMonth;
+                $saveFile->YEAR_FOLDER = $thisYear;
                 $saveFile->NAME_FILE = $nameFile;
                 $saveFile->save();
                 History::create([
@@ -125,30 +141,6 @@ class FileController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $thisMonth = Carbon::now()->month;
-        $getFile = File::where('UUID_FILE_MANAGEMENT',$id)->first();
-        $pathFile = $getFile->PATH_FILE;
-
-
-        $cutPathFile = explode('/',$pathFile);
-        $nameFile = end($cutPathFile);
-
-        //Lấy phần mở rộng
-        $cutNameFile = explode('.',$nameFile);
-        // $fileDetail = $cutNameFile[1];
-        return [$cutNameFile,$nameFile];
-        // return [$fileDetail, $nameFile, $pathFile];
-        // $file = File::where('UUID_FILE_MANAGEMENT',$id)->update([
-        //     "PATH_FILE" => $fileDetail.'/'.$thisMonth.'/'.$request->get('nameFile').'/'.$fileDetail
-        // ]);
-        // // $file->PATH_NAME = $request->get();
-        // // $file->save();
-        // return response()->json($file,200);
-
-
-        //Thay đổi tên file
-        // $file->PATH_FILE = $request->get('nameFile');
-
         
     }
 
@@ -164,18 +156,17 @@ class FileController extends Controller
             # code...
             $user = UserCRM::where('USER_TOKEN',$request->get('api_token'))->first(); 
             if ($user) {
-                # code...
-                $file = File::where('UUID_FILE',$id)->first();
-            
-                $file_delete = File::where('UUID_FILE',$id)->delete();
+                # code...	
+                $file = File::where('UUID_FILE_MANAGEMENT',$id)->first();
+                $path = $file->YEAR_FOLDER.'/'.$file->FOLDER_FILE.'/'.$file->TYPE_FILE.'/'.$file->MONTH_FOLDER.'/';
+                unlink($path.$file->NAME_FILE);                
+                $file_delete = File::where('UUID_FILE_MANAGEMENT',$id)->delete();
                 History::create([
                     "UUID_USER" => $user->UUID_USER,
                     "UUID_HISTORY" => Str::uuid(),
                     "NAME_HISTORY" => "user",
-                    "NOTE_HISTORY" => $user->USERNAME.' vừa xóa file '.$file_delete->NAME_FILE
+                    "NOTE_HISTORY" => $user->USERNAME.' vừa xóa file '.$file->NAME_FILE
                 ]);
-                $path = $file->NAME_FILE;
-
                 return response()->json($file, 200);
             }           
         }else{

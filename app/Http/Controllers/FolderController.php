@@ -15,10 +15,16 @@ class FolderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        if($request->has('year')){ 
+            $folderYear = Folder::where('YEAR_FOLDER',$request->get('year'))->get();
+            return response()->json($folderYear,200);
+        }
+        else{
         $folder = Folder::all();
         return response()->json($folder, 200);
+        }
     }
 
     /**

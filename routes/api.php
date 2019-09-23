@@ -58,3 +58,4 @@ Route::post('user/{id}/update', 'UserCRMController@update');
 Route::delete('user/{id}/delete', 'UserCRMController@destroy');
 Route::post('user/login','UserCRMController@loginUser');
 Route::post('user/logout', 'UserCRMController@logoutUser');
+Route::post('user/check', 'UserCRMController@checkUsername');

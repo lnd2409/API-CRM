@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\History;
 use App\UserCRM;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Facades\Auth;
 
@@ -143,6 +145,22 @@ class UserCRMController extends Controller
         $user= UserCRM::where('USER_TOKEN',$token)->update([
             'USER_TOKEN' => null
         ]);
-        return response()->json($user, 200);
+        return response()->json('Đã đăng xuất', 200);
+    }
+
+    public function checkUsername(Request $request){
+        $user = $request->get('USERNAME');
+        $getAllUser = UserCRM::where('USERNAME',$user)->first();
+        if ($getAllUser) {
+            # code...
+            return response([
+                'FALSE'
+            ]);
+        }else{
+            // $token = $request->get('api_token');
+            return response([
+                'true'
+            ]);
+        }
     }
 }
