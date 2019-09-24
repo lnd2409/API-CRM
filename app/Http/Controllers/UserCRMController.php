@@ -40,10 +40,10 @@ class UserCRMController extends Controller
      */
     public function store(Request $request)
     {
-        // if ($request->has('api_token')) {
+        if ($request->has('api_token')) {
             # code...
-            // $user = UserModel::where('USER_TOKEN', $request->get('api_token'))->first();
-            // if ($user) {
+            $user = UserCRM::where('USER_TOKEN', $request->get('api_token'))->first();
+            if ($user) {
                 # code...
                 $data = $request->all();
                 if ($request->has('AVATA')) {
@@ -56,9 +56,9 @@ class UserCRMController extends Controller
                 }
                 $data['PASSWORD'] = md5($request->get('PASSWORD'));
                 $user_new = UserCRM::create($data);
-            // }
-        // }
-        // return response()->json('error');
+            }
+        }
+        return response()->json('error');
     }
 
     /**

@@ -98,7 +98,6 @@ class FileController extends Controller
                 return response()->json($saveFile,200);
             }
         }
-        
     }
     
     /**
