@@ -20,7 +20,7 @@ class FolderController extends Controller
      */
     public function index(Request $request)
     {
-        if($request->get('api_token'))
+        if($request->has('api_token'))
         {
             $user = UserCRM::where('USER_TOKEN',$request->get('api_token'))->first();
             if($user)
@@ -34,7 +34,9 @@ class FolderController extends Controller
                     return response()->json($folder, 200);
                 }
             }
+            return response()->json(false,404);
         }
+        return response()->json(false,401);        
     }
 
     /**
@@ -55,10 +57,11 @@ class FolderController extends Controller
      */
     public function store(Request $request)
     { 
-        if($request->get('api_token'))
+        if($request->has('api_token'))
         {
             $user = UserCRM::where('USER_TOKEN',$request->get('api_token'))->first();
-            if($user){
+            if($user)
+            {
                 $folder = Folder::create($request->all());
                 History::create([
                     "UUID_USER" => $user->UUID_USER,
@@ -68,8 +71,9 @@ class FolderController extends Controller
                 ]);
                 return response()->json($folder, 200);
             }
+            return response()->json(false,404);
         }
-        
+        return response()->json(false,401);
     }
 
     /**
@@ -80,7 +84,7 @@ class FolderController extends Controller
      */
     public function show($id, Request $request)
     {
-        if($request->get('api_token'))
+        if($request->has('api_token'))
         {
             $user = UserCRM::where('USER_TOKEN',$request->get('api_token'))->first();
             if($user){
@@ -94,7 +98,9 @@ class FolderController extends Controller
                     return response()->json($error,404);
                 }
             }
+            return response()->json(false,404);
         }
+        return response()->json(false,401);
     }
 
     /**
@@ -117,22 +123,25 @@ class FolderController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->get('api_token'))
+        if($request->has('api_token'))
         {
             $user = UserCRM::where('USER_TOKEN',$request->get('api_token'))->first();
             if($user){
                 $folder = Folder::where('UUID_FOLDER_MANAGEMENT',$id)->update([
-                    "NAME_FOLDER" => $request->NAME_FOLDER
-                ]);
+                    "NAME_FOLDER" => $request->get('NAME_FOLDER'),
+                    "SAFE_FOLDER" => $request->get("SAFE_FOLDER"),
+                    "YEAR_FOLDER" => $request->get("YEAR_FOLDER")]);
                 History::create([
                     "UUID_USER" => $user->UUID_USER,
                     "UUID_HISTORY" => Str::uuid(),
                     "NAME_HISTORY" => "folder",
-                    "NOTE_HISTORY" => $user->USERNAME.' vừa cập nhật folder '.$folder->NAME_FOLDER
+                    "NOTE_HISTORY" => $user->USERNAME.' vua cap nhat folder '.$request->get('NAME_FOLDER')
                 ]);
                 return response()->json($folder,200);
             }
+            return response()->json(false,404);
         }
+        return response()->json(false,401);
     }
 
     /**
@@ -143,7 +152,7 @@ class FolderController extends Controller
      */
     public function destroy(Request $request,$id)
     {
-        if($request->get('api_token'))
+        if($request->has('api_token'))
         {
             $user = UserCRM::where('USER_TOKEN',$request->get('api_token'))->first();
             if($user){
@@ -152,7 +161,6 @@ class FolderController extends Controller
                                 '=', 'crm_file_management.UUID_FOLDER_MANAGEMENT')
                             ->where('crm_file_management.UUID_FOLDER_MANAGEMENT','=',$id)
                             ->first();
-                // $file = $folder->UUID_FILE_MANAGEMENT;
                 if ($folder) {
                     // trường hợp có file tồn tại trong folder
                     $file = $folder->UUID_FILE_MANAGEMENT;
@@ -169,6 +177,8 @@ class FolderController extends Controller
                     ]);
                 }
             }
+            return response()->json(false,404);
         }
+        return response()->json(false,401);
     }
 }

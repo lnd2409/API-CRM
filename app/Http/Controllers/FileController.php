@@ -21,7 +21,7 @@ class FileController extends Controller
      */
     public function index(Request $request)
     {
-        if($request->get('api_token'))
+        if($request->has('api_token'))
         {
             $user = UserCRM::where('USER_TOKEN',$request->get('api_token'))->first();
             if($user)
@@ -43,7 +43,9 @@ class FileController extends Controller
                     return response()->json($file,200);
                 }
             }
+            return response()->json(false, 404);
         }
+        return response()->json(false, 401);
     }
 
     /**
@@ -66,7 +68,7 @@ class FileController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->get('api_token'))
+        if($request->has('api_token'))
         {
             $user = UserCRM::where('USER_TOKEN',$request->get('api_token'))->first();
             if($user)
@@ -102,7 +104,9 @@ class FileController extends Controller
                 ]);
                 return response()->json($saveFile,200);
             }
+            return response()->json(false, 404);
         }
+        return response()->json(false, 401);
     }
     
     /**
@@ -113,7 +117,7 @@ class FileController extends Controller
      */
     public function show(Request $request,$id)
     {
-        if($request->get('api_token'))
+        if($request->has('api_token'))
         {
             $user = UserCRM::where('USER_TOKEN',$request->get('api_token'))->first();
             if($user)
@@ -129,7 +133,9 @@ class FileController extends Controller
                     ],404);
                 }
             }
+            return response()->json(false, 404);
         }
+        return response()->json(false, 401);
     }
 
     /**
@@ -163,7 +169,7 @@ class FileController extends Controller
      */
     public function destroy($id, Request $request)
     {
-        if ($request->get('api_token')) {
+        if ($request->has('api_token')) {
             # code...
             $user = UserCRM::where('USER_TOKEN',$request->get('api_token'))->first(); 
             if ($user) {
@@ -179,10 +185,10 @@ class FileController extends Controller
                     "NOTE_HISTORY" => $user->USERNAME.' vừa xóa file '.$file->NAME_FILE
                 ]);
                 return response()->json($file, 200);
-            }           
-        }else{
-            return response()->json('error', 401);
+            }
+            return response()->json(false, 404);
         }
+        return response()->json(false, 401);
     }
     
 }
