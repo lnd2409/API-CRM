@@ -20,13 +20,20 @@ class FolderController extends Controller
      */
     public function index(Request $request)
     {
-        if($request->has('year')){ 
-            $folderYear = Folder::where('YEAR_FOLDER',$request->get('year'))->get();
-            return response()->json($folderYear,200);
-        }
-        else{
-        $folder = Folder::all();
-        return response()->json($folder, 200);
+        if($request->get('api_token'))
+        {
+            $user = UserCRM::where('USER_TOKEN',$request->get('api_token'))->first();
+            if($user)
+            {
+                if($request->has('year')){ 
+                    $folderYear = Folder::where('YEAR_FOLDER',$request->get('year'))->get();
+                    return response()->json($folderYear,200);
+                }
+                else{
+                    $folder = Folder::all();
+                    return response()->json($folder, 200);
+                }
+            }
         }
     }
 
@@ -56,7 +63,7 @@ class FolderController extends Controller
                 History::create([
                     "UUID_USER" => $user->UUID_USER,
                     "UUID_HISTORY" => Str::uuid(),
-                    "NAME_HISTORY" => "user",
+                    "NAME_HISTORY" => "folder",
                     "NOTE_HISTORY" => $user->USERNAME.' vừa tạo folder '.$folder->NAME_FOLDER
                 ]);
                 return response()->json($folder, 200);
@@ -120,7 +127,7 @@ class FolderController extends Controller
                 History::create([
                     "UUID_USER" => $user->UUID_USER,
                     "UUID_HISTORY" => Str::uuid(),
-                    "NAME_HISTORY" => "user",
+                    "NAME_HISTORY" => "folder",
                     "NOTE_HISTORY" => $user->USERNAME.' vừa cập nhật folder '.$folder->NAME_FOLDER
                 ]);
                 return response()->json($folder,200);
@@ -157,7 +164,7 @@ class FolderController extends Controller
                     History::create([
                         "UUID_USER" => $user->UUID_USER,
                         "UUID_HISTORY" => Str::uuid(),
-                        "NAME_HISTORY" => "user",
+                        "NAME_HISTORY" => "folder",
                         "NOTE_HISTORY" => $user->USERNAME.' vừa xóa folder '.$folder->NAME_FOLDER
                     ]);
                 }

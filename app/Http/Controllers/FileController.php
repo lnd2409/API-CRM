@@ -21,21 +21,28 @@ class FileController extends Controller
      */
     public function index(Request $request)
     {
-        if($request->has('month'))
-        { 
-            $fileMonth = File::where('MONTH_FOLDER',$request->get('month'))->get();
-            return response()->json($fileMonth,200);
-        }
-        elseif ($request->has('folder'))
+        if($request->get('api_token'))
         {
-            # code...
-            $folderID = File::where('UUID_FOLDER_MANAGEMENT',$request->get('folder'))->get();
-            return response()->json($folderID, 200);
-        }
-        else
-        {
-            $file = File::all();
-            return response()->json($file,200);
+            $user = UserCRM::where('USER_TOKEN',$request->get('api_token'))->first();
+            if($user)
+            {
+                if($request->has('month'))
+                { 
+                    $fileMonth = File::where('MONTH_FOLDER',$request->get('month'))->get();
+                    return response()->json($fileMonth,200);
+                }
+                elseif ($request->has('folder'))
+                {
+                    # code...
+                    $folderID = File::where('UUID_FOLDER_MANAGEMENT',$request->get('folder'))->get();
+                    return response()->json($folderID, 200);
+                }
+                else
+                {
+                    $file = File::all();
+                    return response()->json($file,200);
+                }
+            }
         }
     }
 
@@ -90,7 +97,7 @@ class FileController extends Controller
                 History::create([
                     "UUID_USER" => $user->UUID_USER,
                     "UUID_HISTORY" => Str::uuid(),
-                    "NAME_HISTORY" => "user",
+                    "NAME_HISTORY" => "file",
                     "NOTE_HISTORY" => $user->USERNAME.' vừa tạo file '.$saveFile->NAME_FILE
                 ]);
                 return response()->json($saveFile,200);
@@ -168,7 +175,7 @@ class FileController extends Controller
                 History::create([
                     "UUID_USER" => $user->UUID_USER,
                     "UUID_HISTORY" => Str::uuid(),
-                    "NAME_HISTORY" => "user",
+                    "NAME_HISTORY" => "file",
                     "NOTE_HISTORY" => $user->USERNAME.' vừa xóa file '.$file->NAME_FILE
                 ]);
                 return response()->json($file, 200);

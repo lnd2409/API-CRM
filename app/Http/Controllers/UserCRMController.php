@@ -17,10 +17,23 @@ class UserCRMController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $user = UserCRM::all();
-        return response()->json($user, 200);
+        if($request->get('api_token'))
+        {
+            $user = UserCRM::where('USER_TOKEN',$request->get('api_token'))->first();
+            if($user)
+            {
+                if ($request->get('search')) {
+                    # code...
+                    $user = UserCRM::where('USERNAME',$request->get('search'))->first();
+                    return response()->json($user,200);
+                }else{
+                    $user = UserCRM::all();
+                    return response()->json($user, 200);
+                }
+            }
+        }        
     }
 
     /**
