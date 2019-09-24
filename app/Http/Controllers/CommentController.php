@@ -46,10 +46,19 @@ class CommentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request,$id)
     {
-        $cmt = Comment::where('UUID_COMMENT',$id)->first();
-        return response()->json($cmt,200);
+        if($request->get('api_token'))
+        {
+            $user = UserCRM::where('USER_TOKEN',$request->get('api_token'))->first();
+            if($user){
+                $checkCmt = Comment::where('NAME_USER',$user->USERNAME)->first();
+                if($checkCmt){
+                    $cmt = Comment::where('UUID_COMMENT',$id)->where('NAME_USER',$user->USERNAME)->first();
+                    return response()->json($cmt,200);
+                }
+            }
+        }
     }
 
     /**
@@ -72,10 +81,22 @@ class CommentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $cmt = Comment::where('UUID_COMMENT',$id)->update([
-            'CONTENT_COMMENT' => $request->CONTENT_COMMENT
-        ]);
-        return response()->json($cmt,200);
+        if($request->get('api_token'))
+        {
+            $user = UserCRM::where('USER_TOKEN',$request->get('api_token'))->first();
+            if($user){
+                $cmt = Comment::where('UUID_COMMENT',$id)->update([
+                    'CONTENT_COMMENT' => $request->CONTENT_COMMENT
+                ]);
+                History::create([
+                    "UUID_USER" => $user->UUID_USER,
+                    "UUID_HISTORY" => Str::uuid(),
+                    "NAME_HISTORY" => "user",
+                    "NOTE_HISTORY" => $user->USERNAME.' vừa cập nhật bình luận '.$cmt->UUID_FILE_MANAGEMENT
+                ]);
+                return response()->json($cmt,200);
+            }
+        }
     }
 
     /**

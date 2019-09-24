@@ -71,15 +71,22 @@ class FolderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
-        $folder = Folder::where('UUID_FOLDER_MANAGEMENT',$id)->first();
-        if ($folder) {
-            # code...
-            return response()->json($folder, 200);
-        }else{
-            $error = 'Không tìm thấy thư mục';
-            return response()->json($error,404);
+        if($request->get('api_token'))
+        {
+            $user = UserCRM::where('USER_TOKEN',$request->get('api_token'))->first();
+            if($user){
+                $folder = Folder::where('UUID_FOLDER_MANAGEMENT',$id)->first();
+                if ($folder) {
+                    return response()->json($folder, 200);
+                }
+                else
+                {
+                    $error = 'Không tìm thấy thư mục';
+                    return response()->json($error,404);
+                }
+            }
         }
     }
 
@@ -147,7 +154,12 @@ class FolderController extends Controller
                 }else{
                     // không có file trong hệ thống
                     $folder = Folder::where('UUID_FOLDER_MANAGEMENT',$id)->delete();
-                    return response()->json($folder, 200);
+                    History::create([
+                        "UUID_USER" => $user->UUID_USER,
+                        "UUID_HISTORY" => Str::uuid(),
+                        "NAME_HISTORY" => "user",
+                        "NOTE_HISTORY" => $user->USERNAME.' vừa xóa folder '.$folder->NAME_FOLDER
+                    ]);
                 }
             }
         }

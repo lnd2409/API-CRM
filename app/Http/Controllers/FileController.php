@@ -59,8 +59,6 @@ class FileController extends Controller
      */
     public function store(Request $request)
     {
-        
-        //Xử lý
         if($request->get('api_token'))
         {
             $user = UserCRM::where('USER_TOKEN',$request->get('api_token'))->first();
@@ -106,17 +104,24 @@ class FileController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request,$id)
     {
-        $file = File::where('UUID_FILE_MANAGEMENT',$id)->first();
-        if ($file) {
-            # code...
-            return response()->json($file,200);
-        }else{
-            return response([
-                'error' => true,
-                'msg' => 'Không tìm thấy file'
-            ],404);
+        if($request->get('api_token'))
+        {
+            $user = UserCRM::where('USER_TOKEN',$request->get('api_token'))->first();
+            if($user)
+            {
+                $file = File::where('UUID_FILE_MANAGEMENT',$id)->first();
+                if ($file) {
+                    # code...
+                    return response()->json($file,200);
+                }else{
+                    return response([
+                        'error' => true,
+                        'msg' => 'Không tìm thấy file'
+                    ],404);
+                }
+            }
         }
     }
 
