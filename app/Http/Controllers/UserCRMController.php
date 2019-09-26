@@ -26,11 +26,7 @@ class UserCRMController extends Controller
             {
                 if ($request->has('search')) {
                     # code...
-<<<<<<< HEAD
                     $user = UserCRM::where('USERNAME','like','%'.$request->get('search').'%')->select('UUID_USER','USERNAME','AVATAR')->first();
-=======
-                    $user = UserCRM::where('USERNAME','like','%'.$request->get('search').'%')->select('UUID_USER','AVATAR','USERNAME')->get();
->>>>>>> fddf2cbe9dd5dc83b293ba09158a3cc2f0175e5e
                     return response()->json($user,200);
                 }
                 else if($request->has('get_data'))
