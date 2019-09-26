@@ -19,14 +19,14 @@ class UserCRMController extends Controller
      */
     public function index(Request $request)
     {
-        if($request->get('api_token'))
+        if($request->has('api_token'))
         {
             $user = UserCRM::where('USER_TOKEN',$request->get('api_token'))->first();
             if($user)
             {
                 if ($request->get('search')) {
                     # code...
-                    $user = UserCRM::where('USERNAME',$request->get('search'))->first();
+                    $user = UserCRM::where('USERNAME','like','%'.$request->get('search').'%')->select('UUID_USER','USERNAME','AVATAR')->first();
                     return response()->json($user,200);
                 }else{
                     $user = UserCRM::all();
