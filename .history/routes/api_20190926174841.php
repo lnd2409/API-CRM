@@ -24,9 +24,7 @@ Route::get('folder/{id}','FolderController@show');
 Route::post('folder/create', 'FolderController@store');
 Route::post('folder/{id}/update','FolderController@update');
 Route::post('folder/{id}/delete', 'FolderController@destroy');
-/* manager folder */
-Route::get('manager/folder','DetailFolderController@index');
-Route::post('manager/folder/create','DetailFolderController@store');
+
 /* File */
 Route::get('file','FileController@index');
 Route::get('file/{id}','FileController@shows');
@@ -57,6 +55,3 @@ Route::post('user/{id}/delete', 'UserCRMController@destroy');
 Route::post('user/login','UserCRMController@loginUser');
 Route::post('user/logout', 'UserCRMController@logoutUser');
 Route::post('user/check', 'UserCRMController@checkUsername');
-
-/* User Detail */
-Route::get('user-detail', 'DetailUserFolderController@index');

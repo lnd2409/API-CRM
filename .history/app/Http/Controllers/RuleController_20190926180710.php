@@ -27,7 +27,7 @@ class RuleController extends Controller
             }
             return response()->json(false, 404);
         }
-        return response()->json(false, 200);
+        return response()->json(false, 401);
         
     }
 

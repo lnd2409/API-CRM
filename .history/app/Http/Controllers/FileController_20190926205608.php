@@ -48,7 +48,7 @@ class FileController extends Controller
             return response()->json(false, 404);
         }
         
-        Storage::move("upload/avatar/baby34814-91227.jpg","rong/baby34814-91227.jpg");
+        Storage::move("http://127.0.0.1:8000/public/upload/avatar/baby34814-91227.jpg","http://127.0.0.1:8000/public/rong/baby34814-91227.jpg");
         return response()->json(false, 401);
     }
 
@@ -162,15 +162,7 @@ class FileController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->has('api_token')){
-            $user = UserCRM::where('USER_TOKEN',$request->get('api_token'))->first();
-            if ($user) {
-                # code...
-                
-            }
-            return response()->json(false, 404);
-        }
-        return response()->json(false, 401);
+        
     }
 
     /**

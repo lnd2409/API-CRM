@@ -19,18 +19,14 @@ class UserCRMController extends Controller
      */
     public function index(Request $request)
     {
-        if($request->has('api_token'))
+        if($request->get('api_token'))
         {
             $user = UserCRM::where('USER_TOKEN',$request->get('api_token'))->first();
             if($user)
             {
                 if ($request->has('search')) {
                     # code...
-<<<<<<< HEAD
-                    $user = UserCRM::where('USERNAME','like','%'.$request->get('search').'%')->select('UUID_USER','USERNAME','AVATAR')->first();
-=======
                     $user = UserCRM::where('USERNAME','like','%'.$request->get('search').'%')->select('UUID_USER','AVATAR','USERNAME')->get();
->>>>>>> fddf2cbe9dd5dc83b293ba09158a3cc2f0175e5e
                     return response()->json($user,200);
                 }
                 else if($request->has('get_data'))
@@ -132,9 +128,8 @@ class UserCRMController extends Controller
                     ],404);
                 }
             }
-            return response()->json(false, 404); 
+            
         }
-        return response()->json(false, 401);
     }
 
     /**
@@ -157,48 +152,7 @@ class UserCRMController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->has('api_token'))
-        {
-            $user = UserCRM::where("USER_TOKEN",$request->get("api_token"))->first();
-            if($user)
-            {
-                $data = $request->all();
-                
-                $user_update = UserCRM::where("UUID_USER",$id)->update([
-                    "UUID_RULE" => $data["UUID_RULE"],
-                    "NAME" => $data["NAME"],
-                    "EMAIL" => $data["EMAIL"],
-                    "PHONE" => $data["PHONE"],
-                    "GENDER" => $data["GENDER"],
-                    "BIRTH_DAY" => $data["BIRTH_DAY"],
-                    "ADDRESS" => $data["ADDRESS"],
-                ]);
-                if($user_update)
-                {
-                    if ($request->has('AVATAR')) {
-                        # code...
-                        $file = $request->file('AVATAR');
-                        $fileName = $file->getClientOriginalName();
-                        $file->move('upload/avatar',$fileName);
-                        $path = 'upload/avatar/'.$fileName;
-                        $data['AVATAR'] = $path;
-                        UserCRM::where("UUID_USER",$id)->update([
-                            'AVATAR' => $data["AVATAR"]
-                        ]);
-                        History::create([
-                            "UUID_HISTORY" => Str::uuid(),
-                            "UUID_USER" => $user->UUID_USER,
-                            "NAME_HISTORY" => "user",
-                            "NOTE_HISTORY" => $user->USERNAME.' cập nhật user '.$data["USERNAME"]
-                        ]);
-                        return response()->json($user_update, 200);
-                    }
-                }
-                return response()->json($user_update    , 400);
-            }
-            return response()->json(false, 404);
-        }
-        return response()->json(false, 401);
+        //
     }
 
     /**

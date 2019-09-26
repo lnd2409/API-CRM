@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Rule;
-use App\UserCRM;
 use Illuminate\Http\Request;
 
 class RuleController extends Controller
@@ -13,22 +12,10 @@ class RuleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        if($request->has('api_token'))
-        {
-            $user = UserCRM::where([
-                ["USER_TOKEN",$request->get('api_token')],
-                ["UUID_RULE", "coder-2019"]])->first();
-            if($user)
-            {
-                $rule = Rule::all();
-                return response()->json($rule,200);
-            }
-            return response()->json(false, 404);
-        }
-        return response()->json(false, 200);
-        
+        $rule = Rule::all();
+        return response()->json($rule,200);
     }
 
     /**

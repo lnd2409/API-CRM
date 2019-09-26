@@ -162,15 +162,7 @@ class FileController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->has('api_token')){
-            $user = UserCRM::where('USER_TOKEN',$request->get('api_token'))->first();
-            if ($user) {
-                # code...
-                
-            }
-            return response()->json(false, 404);
-        }
-        return response()->json(false, 401);
+        
     }
 
     /**

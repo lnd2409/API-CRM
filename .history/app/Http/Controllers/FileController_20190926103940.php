@@ -9,8 +9,6 @@ use App\UserCRM;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
-
 use DB;
 // use File;
 
@@ -47,8 +45,6 @@ class FileController extends Controller
             }
             return response()->json(false, 404);
         }
-        
-        Storage::move("upload/avatar/baby34814-91227.jpg","rong/baby34814-91227.jpg");
         return response()->json(false, 401);
     }
 
@@ -162,15 +158,7 @@ class FileController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->has('api_token')){
-            $user = UserCRM::where('USER_TOKEN',$request->get('api_token'))->first();
-            if ($user) {
-                # code...
-                
-            }
-            return response()->json(false, 404);
-        }
-        return response()->json(false, 401);
+        
     }
 
     /**
