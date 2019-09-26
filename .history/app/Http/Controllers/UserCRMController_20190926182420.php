@@ -190,7 +190,7 @@ class UserCRMController extends Controller
                         return response()->json($user_update, 200);
                     }
                 }
-                return response()->json($user_update    , 400);
+                return response()->json($data, 400);
             }
             return response()->json(false, 404);
         }

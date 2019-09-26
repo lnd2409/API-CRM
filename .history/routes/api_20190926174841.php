@@ -24,9 +24,7 @@ Route::get('folder/{id}','FolderController@show');
 Route::post('folder/create', 'FolderController@store');
 Route::post('folder/{id}/update','FolderController@update');
 Route::post('folder/{id}/delete', 'FolderController@destroy');
-/* manager folder */
-Route::get('manager/folder','DetailFolderController@index');
-Route::post('manager/folder/create','DetailFolderController@store');
+
 /* File */
 Route::get('file','FileController@index');
 Route::get('file/{id}','FileController@shows');

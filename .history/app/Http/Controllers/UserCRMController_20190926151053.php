@@ -67,10 +67,10 @@ class UserCRMController extends Controller
                 $data["AVATAR"] = null;
                 if ($request->has('AVATAR')) {
                     # code...
-                    $file = $request->file('AVATAR');
+                    $file = $request->file('AVATA');
                     $fileName = $file->getClientOriginalName();
-                    $file->move('upload/avatar',$fileName);
-                    $path = 'upload/avatar/'.$fileName;
+                    $file->move('upload/avata',$fileName);
+                    $path = 'upload/avata/'.$fileName;
                     $data['AVATAR'] = $path;
                 }
                 $data['PASSWORD'] = md5($request->get('PASSWORD'));
@@ -80,7 +80,6 @@ class UserCRMController extends Controller
                     "AVATAR" => $data["AVATAR"],
                     "USERNAME" => $data["USERNAME"],
                     "PASSWORD" => $data["PASSWORD"],
-                    "NAME" => $data["NAME"],
                     "EMAIL" => $data["EMAIL"],
                     "PHONE" => $data["PHONE"],
                     "GENDER" => $data["GENDER"],
@@ -110,27 +109,18 @@ class UserCRMController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id, Request $request)
+    public function show($id)
     {
-        if($request->has('api_token'))
-        {
-            $user_token = UserCRM::where("USER_TOKEN",$request->get("api_token"))->first();
-            if($user_token)
-            {
-                $user = UserCRM::where('USERNAME',$id)->first();
-                if ($user) {
-                    # code...
-                    return response()->json($user, 200);
-                }else{
-                    return response([
-                        'error' => true,
-                        'msg' => 'Khong tim thay user'
-                    ],404);
-                }
-            }
-            return response()->json(false, 404); 
+        $user = UserCRM::where('UUID_USER',$id)->first();
+        if ($user) {
+            # code...
+            return response()->json($user, 200);
+        }else{
+            return response([
+                'error' => true,
+                'msg' => 'Khong tim thay user'
+            ],404);
         }
-        return response()->json(false, 401);
     }
 
     /**
@@ -153,48 +143,7 @@ class UserCRMController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->has('api_token'))
-        {
-            $user = UserCRM::where("USER_TOKEN",$request->get("api_token"))->first();
-            if($user)
-            {
-                $data = $request->all();
-                
-                $user_update = UserCRM::where("UUID_USER",$id)->update([
-                    "UUID_RULE" => $data["UUID_RULE"],
-                    "NAME" => $data["NAME"],
-                    "EMAIL" => $data["EMAIL"],
-                    "PHONE" => $data["PHONE"],
-                    "GENDER" => $data["GENDER"],
-                    "BIRTH_DAY" => $data["BIRTH_DAY"],
-                    "ADDRESS" => $data["ADDRESS"],
-                ]);
-                if($user_update)
-                {
-                    if ($request->has('AVATAR')) {
-                        # code...
-                        $file = $request->file('AVATAR');
-                        $fileName = $file->getClientOriginalName();
-                        $file->move('upload/avatar',$fileName);
-                        $path = 'upload/avatar/'.$fileName;
-                        $data['AVATAR'] = $path;
-                        UserCRM::where("UUID_USER",$id)->update([
-                            'AVATAR' => $data["AVATAR"]
-                        ]);
-                        History::create([
-                            "UUID_HISTORY" => Str::uuid(),
-                            "UUID_USER" => $user->UUID_USER,
-                            "NAME_HISTORY" => "user",
-                            "NOTE_HISTORY" => $user->USERNAME.' cập nhật user '.$data["USERNAME"]
-                        ]);
-                        return response()->json($user_update, 200);
-                    }
-                }
-                return response()->json($user_update    , 400);
-            }
-            return response()->json(false, 404);
-        }
-        return response()->json(false, 401);
+        //
     }
 
     /**

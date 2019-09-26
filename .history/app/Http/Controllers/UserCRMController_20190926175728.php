@@ -161,7 +161,6 @@ class UserCRMController extends Controller
                 $data = $request->all();
                 
                 $user_update = UserCRM::where("UUID_USER",$id)->update([
-                    "UUID_RULE" => $data["UUID_RULE"],
                     "NAME" => $data["NAME"],
                     "EMAIL" => $data["EMAIL"],
                     "PHONE" => $data["PHONE"],
@@ -190,7 +189,7 @@ class UserCRMController extends Controller
                         return response()->json($user_update, 200);
                     }
                 }
-                return response()->json($user_update    , 400);
+                return response()->json(false, 400);
             }
             return response()->json(false, 404);
         }

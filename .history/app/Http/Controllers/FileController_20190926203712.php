@@ -47,8 +47,6 @@ class FileController extends Controller
             }
             return response()->json(false, 404);
         }
-        
-        Storage::move("upload/avatar/baby34814-91227.jpg","rong/baby34814-91227.jpg");
         return response()->json(false, 401);
     }
 
