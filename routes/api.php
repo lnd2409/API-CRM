@@ -57,8 +57,14 @@ Route::post('user/{id}/delete', 'UserCRMController@destroy');
 Route::post('user/login','UserCRMController@loginUser');
 Route::post('user/logout', 'UserCRMController@logoutUser');
 Route::post('user/check', 'UserCRMController@checkUsername');
+<<<<<<< HEAD
 //
 Route::get("history",'UserCRMController@history');
 // parable
 Route::get('parable','parableController@index');
 Route::post('parable/create','parableController@store');
+=======
+
+/* User Detail */
+Route::get('user-detail', 'DetailUserFolderController@index');
+>>>>>>> 1464b62e3b771ab8c5e1a2d99fcf1160ab1b5127
