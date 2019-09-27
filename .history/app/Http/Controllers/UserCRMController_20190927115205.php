@@ -76,7 +76,7 @@ class UserCRMController extends Controller
                 $data['PASSWORD'] = md5($request->get('PASSWORD'));
                 $user_new = UserCRM::create([
                     "UUID_USER" => Str::uuid(),
-                    "UUID_RULE" => $$data["UUID_RULE"],
+                    "UUID_RULE" => 'coder-2019',
                     "AVATAR" => $data["AVATAR"],
                     "USERNAME" => $data["USERNAME"],
                     "PASSWORD" => $data["PASSWORD"],

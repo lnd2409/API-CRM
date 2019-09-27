@@ -28,13 +28,18 @@ class FileController extends Controller
             $user = UserCRM::where('USER_TOKEN',$request->get('api_token'))->first();
             if($user)
             {
-                if($request->has('month'))
+                if($request->has('month') && $request->has("UUID_FOLDER_MANAGEMENT"))
                 { 
                     $fileMonth = File::where([
                         ['MONTH_FOLDER',$request->get('month')],
-                        ['UUID_FOLDER_MANAGEMENT',$request->get("folder")]
-                    ])->get();
+                        ['UUID_FOLDER_MANAGEMENT',$request->get("UUID_FOLDER_MANAGEMENT")])->get();
                     return response()->json($fileMonth,200);
+                }
+                elseif ($request->has('folder'))
+                {
+                    # code...
+                    $folderID = File::where('UUID_FOLDER_MANAGEMENT',$request->get('folder'))->get();
+                    return response()->json($folderID, 200);
                 }
                 else
                 {

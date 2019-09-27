@@ -57,7 +57,7 @@ class CommentController extends Controller
     {
         if($request->has('api_token'))
         {
-            $user = UserCRM::where("USER_TOKEN",$request->get('api_token'))->first();
+            $user = UserCRM::where("USER_TOEKN",$request->get('api_token'))->first();
             if($user)
             {
                 $cmt = Comment::create([

@@ -15,26 +15,10 @@ class CommentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        if($request->has('api_token'))
-        {
-            $user = UserCRM::where('USER_TOKEN',$request->get('api_token'))->first();
-            if($user)
-            {   
-                if($request->has("UUID_FILE_MANAGEMENT"))
-                {
-                    $comments = Comment::join("crm_user","crm_comment_file_management.UUID_USER","crm_user.UUID_USER")->
-                    where('UUID_FILE_MANAGEMENT',$request->get('UUID_FILE_MANAGEMENT'))
-                    ->select('crm_comment_file_management.*','crm_user.UUID_USER','crm_user.AVATAR','crm_user.USERNAME')
-                    ->orderBy('crm_comment_file_management.CREATED_AT','DESC')->get();
-                    return response()->json($comments, 200);
-                }
-                return response()->json(false, 500);
-            }
-            return response()->json(false, 404);
-        }
-        return response()->json(false, 401);
+        $cmt = Comment::all();
+        return response()->json($cmt,200);
     }
 
     /**
@@ -57,31 +41,16 @@ class CommentController extends Controller
     {
         if($request->has('api_token'))
         {
-            $user = UserCRM::where("USER_TOKEN",$request->get('api_token'))->first();
+            $user = UserCRM::where("USER_TOEKN",$request->get('api_token'))->first();
             if($user)
             {
                 $cmt = Comment::create([
-                    'UUID_COMMENT' => Str::uuid(),
-                    'UUID_FILE_MANAGEMENT' => $request->get("UUID_FILE_MANAGEMENT"),
-                    'UUID_USER' => $user->UUID_USER,
-                    'CONTENT_COMMENT' => $request->get('CONTENT_COMMENT'),
-                    'NAME_USER' => $user->USERNAME,
-                ]);
-                if($cmt)
-                {
-                    History::create([
-                        "UUID_HISTORY" => Str::uuid(),
-                        "UUID_USER" => $user->UUID_USER,
-                        "NAME_HISTORY" => 'Comment',
-                        "NOTE_HISTORY" => $user->USERNAME.' comment '.$request->get("CONTENT_COMMENT")
-                    ]);
-                    return response()->json($cmt, 200);
-                }
-                return response()->json(false, 400);
+
+                ])
             }
-            return response()->json(false, 404);
         }
-        return response()->json(false, 401);
+        $cmt = Comment::create($request->all());
+        return response()->json($cmt,200);
     }
 
     /**

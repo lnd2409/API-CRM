@@ -27,13 +27,13 @@ class FolderController extends Controller
             if($user)
             {
                 if($request->has('year')){ 
-                    if($user->UUID_RULE != 'coder-2019')
+                    if($request->has('filter'))
                     {
                         $folderYear = Folder::join('crm_detail_user_folder','crm_folder_management.UUID_FOLDER_MANAGEMENT','crm_detail_user_folder.UUID_FOLDER_MANAGEMENT')
                         ->where([
                             ['crm_folder_management.YEAR_FOLDER',$request->get('year')],
                             ['crm_detail_user_folder.UUID_USER',$user->UUID_USER]])->get();
-                        return response()->json($folderYear,200);
+                            return response()->json($folderYear,200);
                     }
                     $folderYear = Folder::where('YEAR_FOLDER',$request->get('year'))->get();
                     return response()->json($folderYear,200);

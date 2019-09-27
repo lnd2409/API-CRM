@@ -24,10 +24,7 @@ class CommentController extends Controller
             {   
                 if($request->has("UUID_FILE_MANAGEMENT"))
                 {
-                    $comments = Comment::join("crm_user","crm_comment_file_management.UUID_USER","crm_user.UUID_USER")->
-                    where('UUID_FILE_MANAGEMENT',$request->get('UUID_FILE_MANAGEMENT'))
-                    ->select('crm_comment_file_management.*','crm_user.UUID_USER','crm_user.AVATAR','crm_user.USERNAME')
-                    ->orderBy('crm_comment_file_management.CREATED_AT','DESC')->get();
+                    $comments = Comment::where('UUID_FILE_MANAGEMENT',$request->get('UUID_FILE_MANAGEMENT'))->orderBy('CREATED_AT','DESC')->get();
                     return response()->json($comments, 200);
                 }
                 return response()->json(false, 500);
@@ -57,7 +54,7 @@ class CommentController extends Controller
     {
         if($request->has('api_token'))
         {
-            $user = UserCRM::where("USER_TOKEN",$request->get('api_token'))->first();
+            $user = UserCRM::where("USER_TOEKN",$request->get('api_token'))->first();
             if($user)
             {
                 $cmt = Comment::create([

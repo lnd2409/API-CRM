@@ -58,7 +58,7 @@ Route::post('user/login','UserCRMController@loginUser');
 Route::post('user/logout', 'UserCRMController@logoutUser');
 Route::post('user/check', 'UserCRMController@checkUsername');
 //
-Route::get("history",'UserCRMController@history');
+Route::get("history",'UserController@history')
 // parable
 Route::get('parable','parableController@index');
 Route::post('parable/create','parableController@store');

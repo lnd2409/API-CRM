@@ -76,7 +76,7 @@ class UserCRMController extends Controller
                 $data['PASSWORD'] = md5($request->get('PASSWORD'));
                 $user_new = UserCRM::create([
                     "UUID_USER" => Str::uuid(),
-                    "UUID_RULE" => $$data["UUID_RULE"],
+                    "UUID_RULE" => 'coder-2019',
                     "AVATAR" => $data["AVATAR"],
                     "USERNAME" => $data["USERNAME"],
                     "PASSWORD" => $data["PASSWORD"],
@@ -253,19 +253,9 @@ class UserCRMController extends Controller
         }
     }
 
-    public function history(Request $request)
+    public function history()
     {
-        if($request->has('api_token'))
-        {
-            $user = UserCRM::where("USER_TOKEN",$request->get('api_token'))->first();
-            if($user)
-            {
-                $historys = History::all();
-                return response()->json($historys, 200);
-            }
-            return response()->json(false, 404);
-        }
-        return response()->json(false, 401);
-       
+        $historys = History::all();
+        return response()->json($historys, 200);
     }
 }

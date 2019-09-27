@@ -32,7 +32,7 @@ class FileController extends Controller
                 { 
                     $fileMonth = File::where([
                         ['MONTH_FOLDER',$request->get('month')],
-                        ['UUID_FOLDER_MANAGEMENT',$request->get("folder")]
+                        ['UUID_FOLDER_MANAGEMENT',$request->get("UUID_FOLDER_MANAGEMENT")]
                     ])->get();
                     return response()->json($fileMonth,200);
                 }
