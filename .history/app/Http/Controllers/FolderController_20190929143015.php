@@ -106,7 +106,7 @@ class FolderController extends Controller
             if($user)
             {
                 $parent = null;
-                if($request->has("UUID_PARENT"))
+                if($request->has("UUID_PARET"))
                 {
                     $parent =  $request->get("UUID_PARENT");
                 }
@@ -123,7 +123,7 @@ class FolderController extends Controller
                     "NAME_HISTORY" => "folder",
                     "NOTE_HISTORY" => $user->USERNAME.' vừa tạo folder '.$folder->NAME_FOLDER
                 ]);
-                return response()->json($request->all(), 200);
+                return response()->json($folder, 200);
             }
             return response()->json(false,404);
         }

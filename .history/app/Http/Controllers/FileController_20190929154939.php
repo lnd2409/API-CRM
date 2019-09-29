@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Closure;
 use App\File;
 use App\Folder;
 use App\History;
@@ -204,17 +203,8 @@ class FileController extends Controller
     public function dowload(Request $request, $id)
     {
         $file = File::where("UUID_FILE_MANAGEMENT",$id)->first();
-        $path = public_path('/'.$file->YEAR_FOLDER.'/'.$file->FOLDER_FILE.'/'.$file->TYPE_FILE.'/'.$file->MONTH_FOLDER.'/'.$file->NAME_FILE);
-        // $headers = array(
-        //     'Content-Type: application/pdf',
-        // );
-
-        // response()->headers->set('Access-Control-Allow-Origin' , '*');
-        // response()->headers->set('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PUT, DELETE');
-        // response()->headers->set('Access-Control-Allow-Headers', 'Content-Type, Accept, Authorization, X-Requested-With, Application');
-         return response()->download($path, 'filename.pdf'); 
-       
-        // return response()->download($path);
+        $path = public_path().'/'.$file->YEAR_FOLDER.'/'.$file->FOLDER_FILE.'/'.$file->TYPE_FILE.'/'.$file->MONTH_FOLDER.'/'.$file->NAME_FILE;
+        return response()->download($path;
     }
     
 }

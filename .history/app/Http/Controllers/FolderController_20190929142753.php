@@ -105,17 +105,12 @@ class FolderController extends Controller
             $user = UserCRM::where('USER_TOKEN',$request->get('api_token'))->first();
             if($user)
             {
-                $parent = null;
-                if($request->has("UUID_PARENT"))
-                {
-                    $parent =  $request->get("UUID_PARENT");
-                }
                 $folder = Folder::create([
                     "UUID_FOLDER_MANAGEMENT" => Str::uuid(),
                     "NAME_FOLDER" => $request->get("NAME_FOLDER"),
                     "SAFE_FOLDER" => $request->get("SAFE_FOLDER"),
                     "YEAR_FOLDER" => $request->get("YEAR_FOLDER"),
-                    "UUID_PARENT" => $parent
+                    "UUID_PARENT" => $request("UUID_PARENT"),
                 ]);
                 History::create([
                     "UUID_USER" => $user->UUID_USER,
@@ -123,7 +118,7 @@ class FolderController extends Controller
                     "NAME_HISTORY" => "folder",
                     "NOTE_HISTORY" => $user->USERNAME.' vừa tạo folder '.$folder->NAME_FOLDER
                 ]);
-                return response()->json($request->all(), 200);
+                return response()->json($folder, 200);
             }
             return response()->json(false,404);
         }

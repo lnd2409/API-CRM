@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Closure;
 use App\File;
 use App\Folder;
 use App\History;
@@ -104,7 +103,7 @@ class FileController extends Controller
                     "NAME_HISTORY" => "file",
                     "NOTE_HISTORY" => $user->USERNAME.' vừa tạo file '.$saveFile->NAME_FILE
                 ]);
-                return response()->json($request->all(),200);
+                return response()->json($saveFile,200);
             }
             return response()->json(false, 404);
         }
@@ -199,22 +198,6 @@ class FileController extends Controller
             return response()->json(false, 404);
         }
         return response()->json(false, 401);
-    }
-
-    public function dowload(Request $request, $id)
-    {
-        $file = File::where("UUID_FILE_MANAGEMENT",$id)->first();
-        $path = public_path('/'.$file->YEAR_FOLDER.'/'.$file->FOLDER_FILE.'/'.$file->TYPE_FILE.'/'.$file->MONTH_FOLDER.'/'.$file->NAME_FILE);
-        // $headers = array(
-        //     'Content-Type: application/pdf',
-        // );
-
-        // response()->headers->set('Access-Control-Allow-Origin' , '*');
-        // response()->headers->set('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PUT, DELETE');
-        // response()->headers->set('Access-Control-Allow-Headers', 'Content-Type, Accept, Authorization, X-Requested-With, Application');
-         return response()->download($path, 'filename.pdf'); 
-       
-        // return response()->download($path);
     }
     
 }

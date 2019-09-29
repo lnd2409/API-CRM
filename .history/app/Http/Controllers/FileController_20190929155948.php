@@ -205,9 +205,9 @@ class FileController extends Controller
     {
         $file = File::where("UUID_FILE_MANAGEMENT",$id)->first();
         $path = public_path('/'.$file->YEAR_FOLDER.'/'.$file->FOLDER_FILE.'/'.$file->TYPE_FILE.'/'.$file->MONTH_FOLDER.'/'.$file->NAME_FILE);
-        // $headers = array(
-        //     'Content-Type: application/pdf',
-        // );
+        $headers = array(
+            'Content-Type: application/pdf',
+        );
 
         // response()->headers->set('Access-Control-Allow-Origin' , '*');
         // response()->headers->set('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PUT, DELETE');

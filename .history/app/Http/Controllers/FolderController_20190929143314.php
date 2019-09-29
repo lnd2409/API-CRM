@@ -106,7 +106,7 @@ class FolderController extends Controller
             if($user)
             {
                 $parent = null;
-                if($request->has("UUID_PARENT"))
+                if($request->has("UUID_PARET"))
                 {
                     $parent =  $request->get("UUID_PARENT");
                 }

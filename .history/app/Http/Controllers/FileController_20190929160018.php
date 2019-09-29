@@ -209,9 +209,9 @@ class FileController extends Controller
         //     'Content-Type: application/pdf',
         // );
 
-        // response()->headers->set('Access-Control-Allow-Origin' , '*');
-        // response()->headers->set('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PUT, DELETE');
-        // response()->headers->set('Access-Control-Allow-Headers', 'Content-Type, Accept, Authorization, X-Requested-With, Application');
+        response()->headers->set('Access-Control-Allow-Origin' , '*');
+        response()->headers->set('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PUT, DELETE');
+        response()->headers->set('Access-Control-Allow-Headers', 'Content-Type, Accept, Authorization, X-Requested-With, Application');
          return response()->download($path, 'filename.pdf'); 
        
         // return response()->download($path);

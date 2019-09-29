@@ -13,9 +13,9 @@ use Illuminate\Http\Request;
 |
 */
 
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
+Route::middleware('auth:api')->get('/user', function (Request $request) {
+    return $request->user();
+});
 
 
 /* Folder */
@@ -33,7 +33,7 @@ Route::get('file/{id}','FileController@shows');
 Route::post('file/create', 'FileController@store');
 Route::post('file/{id}/update', 'FileController@update');
 Route::post('file/{id}/delete', 'FileController@destroy');
-Route::get('download/{id}', 'FileController@dowload');
+
 /* Rule */
 Route::get('rule','RuleController@index');
 Route::get('rule/{id}','RuleController@shows');

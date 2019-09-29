@@ -30,48 +30,15 @@ class FolderController extends Controller
                     if($user->UUID_RULE != 'coder-2019')
                     {
                         
-                        if($request->has('UUID_PARENT')){
-                            // $folderYear = Folder::where([
-                            //     ['YEAR_FOLDER',$request->get('year')],
-                            //     ['UUID_PARENT',$request->get('UUID_PARENT')]])->get();
-                            // return response()->json($folderYear,200);
-                            $folderYear = Folder::join('crm_detail_user_folder','crm_folder_management.UUID_FOLDER_MANAGEMENT','crm_detail_user_folder.UUID_FOLDER_MANAGEMENT')
-                                ->where([
-                                ['crm_folder_management.YEAR_FOLDER',$request->get('year')],
-                                ['crm_detail_user_folder.UUID_USER',$user->UUID_USER],
-                                ['crm_folder_management.UUID_PARENT',$request->get("UUID_PARENT")]])->get();
-                            return response()->json($folderYear,200);
-                        }
                         $folderYear = Folder::join('crm_detail_user_folder','crm_folder_management.UUID_FOLDER_MANAGEMENT','crm_detail_user_folder.UUID_FOLDER_MANAGEMENT')
                         ->where([
                             ['crm_folder_management.YEAR_FOLDER',$request->get('year')],
                             ['crm_detail_user_folder.UUID_USER',$user->UUID_USER]])->get();
                         return response()->json($folderYear,200);
                     }
-                    else if($request->has('check_path'))
-                    {
-                        $folder = Folder::where([
-                            ["SAFE_FOLDER",$request->get('check_path')],
-                            ["YEAR_FOLDER",$request->get('year')]
-                        ])->first();
-                        if($folder)
-                        {
-                            return response()->json(false, 200);
-                        }
-                        return response()->json(true, 200);
-                    }
-                    else if($request->has('UUID_PARENT')){
-                        $folderYear = Folder::where([
-                            ['YEAR_FOLDER',$request->get('year')],
-                            ['UUID_PARENT',$request->get('UUID_PARENT')]])->get();
-                        return response()->json($folderYear,200);
-                    }
-                    $folderYear = Folder::where([
-                        ['YEAR_FOLDER',$request->get('year')],
-                        ['UUID_PARENT', null]])->get();
+                    $folderYear = Folder::where('YEAR_FOLDER',$request->get('year'))->get();
                     return response()->json($folderYear,200);
                 }
-                
                 else{
                     $folder = Folder::all();
                     return response()->json($folder, 200);
@@ -105,25 +72,14 @@ class FolderController extends Controller
             $user = UserCRM::where('USER_TOKEN',$request->get('api_token'))->first();
             if($user)
             {
-                $parent = null;
-                if($request->has("UUID_PARENT"))
-                {
-                    $parent =  $request->get("UUID_PARENT");
-                }
-                $folder = Folder::create([
-                    "UUID_FOLDER_MANAGEMENT" => Str::uuid(),
-                    "NAME_FOLDER" => $request->get("NAME_FOLDER"),
-                    "SAFE_FOLDER" => $request->get("SAFE_FOLDER"),
-                    "YEAR_FOLDER" => $request->get("YEAR_FOLDER"),
-                    "UUID_PARENT" => $parent
-                ]);
+                $folder = Folder::create($request->all());
                 History::create([
                     "UUID_USER" => $user->UUID_USER,
                     "UUID_HISTORY" => Str::uuid(),
                     "NAME_HISTORY" => "folder",
                     "NOTE_HISTORY" => $user->USERNAME.' vừa tạo folder '.$folder->NAME_FOLDER
                 ]);
-                return response()->json($request->all(), 200);
+                return response()->json($folder, 200);
             }
             return response()->json(false,404);
         }
@@ -183,9 +139,9 @@ class FolderController extends Controller
             if($user){
                 $parent = null;
                 $lv = 1;
-                if($request->has('UUID_PARENT'))
+                if($request->has('parent'))
                 {
-                    $parent = $request->get('UUID_PARENT');
+                    $parent = $request->get('parent');
                 }
                 if($request->has('LV_FOLDER'))
                 {
@@ -239,9 +195,8 @@ class FolderController extends Controller
                         "UUID_USER" => $user->UUID_USER,
                         "UUID_HISTORY" => Str::uuid(),
                         "NAME_HISTORY" => "folder",
-                        "NOTE_HISTORY" => $user->USERNAME.' vừa xóa folder '
+                        "NOTE_HISTORY" => $user->USERNAME.' vừa xóa folder '.$folder->NAME_FOLDER
                     ]);
-                    return response()->json($folder, 200);
                 }
             }
             return response()->json(false,404);
